@@ -4,7 +4,7 @@ const MongoClient =  require('mongodb').MongoClient
 const app = express();
 
 
-MongoClient.connect('mongodb+srv://viktorCodes:XIFDORQxH4UJzzan@cluster0.mg9we.mongodb.net/?retryWrites=true&w=majority')
+MongoClient.connect('mongodb+srv://viktorCodes:*****@cluster0.mg9we.mongodb.net/?retryWrites=true&w=majority')
 .then(client => {
     console.log('Connected to Database')
     const db = client.db('star-wars-quotes')
