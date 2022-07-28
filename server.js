@@ -1,25 +1,41 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const MongoClient =  require('mongodb').MongoClient
 const app = express();
 
 
-app.use(bodyParser.urlencoded({extended: true}))
+MongoClient.connect('mongodb+srv://viktorCodes:XIFDORQxH4UJzzan@cluster0.mg9we.mongodb.net/?retryWrites=true&w=majority')
+.then(client => {
+    console.log('Connected to Database')
+    const db = client.db('star-wars-quotes')
+    const quotesCollection = db.collection('quotes')
 
-//READ(GET UNDER THE HOOD)
+ app.use(bodyParser.urlencoded({extended: true}))
+ app.use(express.static('public'))
+
+    //READ(GET UNDER THE HOOD)
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+   // res.sendFile(__dirname + '/index.html')
+    db.collection('quotes').find().toArray()
+    .then(results => {
+        res.render('index.ejs', {quotes: results})
+    })
+   .catch(error => console.error(error)) 
+  
     
 })
 
 //CREATE(POST UNDER THE HOOD)
 
 app.post('/quotes', (req, res) => {
-    console.log(req.body)
+    quotesCollection.insertOne(req.body)
+    .then(result =>{
+        res.redirect('/')
+    })
+    .catch(error => console.error(error))
 })
 
-
-
-
+app.set('view enjine', 'ejs')
 
 
 //LISTEN ON SERVER
@@ -27,3 +43,16 @@ app.post('/quotes', (req, res) => {
 app.listen(3000, function(){
     console.log('listening on 3000')
 })
+
+
+})
+.catch(console.error)
+
+
+
+
+
+
+
+
+
